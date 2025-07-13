@@ -9,10 +9,12 @@ from .models import Teacher, Student
 from .serializers import (TeacherSerializer, StudentSerializer,
 AdminCreateTeacherSerializer, AdminCreateStudentSerializer)
 from rest_framework import status
+import csv
+from django.http import HttpResponse
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
 
 # Admin-only Teacher CRUD
 class TeacherAdminViewSet(viewsets.ModelViewSet):
@@ -98,14 +100,6 @@ class StudentAssignedTeacherView(APIView):
         except Teacher.DoesNotExist:
             return Response({"error": "Assigned teacher not found."}, status=404)
 
-import csv
-from django.http import HttpResponse
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from core.permissions import IsAdmin  # your custom permission
-
-from core.models import Student, Teacher
-
 class ExportStudentsCSVView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -131,7 +125,6 @@ class ExportStudentsCSVView(APIView):
             ])
 
         return response
-
 
 class ExportTeachersCSVView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
