@@ -97,3 +97,61 @@ class StudentAssignedTeacherView(APIView):
             return Response({"error": "Student profile not found."}, status=404)
         except Teacher.DoesNotExist:
             return Response({"error": "Assigned teacher not found."}, status=404)
+
+import csv
+from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from core.permissions import IsAdmin  # your custom permission
+
+from core.models import Student, Teacher
+
+class ExportStudentsCSVView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="students.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'First Name', 'Last Name', 'Email', 'Phone Number',
+            'Roll Number', 'Class', 'DOB', 'Admission Date',
+            'Status', 'Assigned Teacher'
+        ])
+
+        students = Student.objects.select_related('assigned_teacher').all()
+
+        for s in students:
+            writer.writerow([
+                s.first_name, s.last_name, s.email, s.phone,
+                s.roll_number, s.student_class, s.date_of_birth,
+                s.admission_date, s.status,
+                f"{s.assigned_teacher.first_name} {s.assigned_teacher.last_name}" if s.assigned_teacher else ''
+            ])
+
+        return response
+
+
+class ExportTeachersCSVView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="teachers.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'First Name', 'Last Name', 'Email', 'Phone Number',
+            'Employee ID', 'Subject', 'Date of Joining', 'Status'
+        ])
+
+        teachers = Teacher.objects.all()
+        for t in teachers:
+            writer.writerow([
+                t.first_name, t.last_name, t.email, t.phone,
+                t.employee_id, t.subject_specialization,
+                t.date_of_joining, t.status
+            ])
+
+        return response

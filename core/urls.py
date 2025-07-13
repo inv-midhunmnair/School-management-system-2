@@ -11,7 +11,8 @@ from .views import (
     TeacherProfileView,
     TeacherAssignedStudentsView,
     StudentProfileView,
-    StudentAssignedTeacherView
+    StudentAssignedTeacherView,
+    ExportStudentsCSVView, ExportTeachersCSVView
 )
 
 router = DefaultRouter()
@@ -28,4 +29,6 @@ urlpatterns = [
     path('teacher/students/', TeacherAssignedStudentsView.as_view()),
     path('student/profile/', StudentProfileView.as_view()),
     path('student/teacher/', StudentAssignedTeacherView.as_view()),
+    path('admin/export/students/', ExportStudentsCSVView.as_view(), name='export-students-csv'),
+    path('admin/export/teachers/', ExportTeachersCSVView.as_view(), name='export-teachers-csv'),
 ]
