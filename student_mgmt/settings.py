@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'core',
+    'exams'
 ]
 
 AUTH_USER_MODEL = 'core.User'
