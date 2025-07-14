@@ -6,7 +6,8 @@ from .views import (
     CustomTokenObtainPairView,TeacherAdminViewSet,StudentAdminViewSet,
     AdminCreateStudentView,AdminCreateTeacherView,TeacherProfileView,
     TeacherAssignedStudentsView,StudentProfileView,StudentAssignedTeacherView,
-    ExportStudentsCSVView, ExportTeachersCSVView,ImportStudentsCSVView,ImportTeachersCSVView
+    ExportStudentsCSVView, ExportTeachersCSVView,ImportStudentsCSVView,
+    ImportTeachersCSVView,PasswordResetConfirmView,PasswordResetRequestView
 )
 
 router = DefaultRouter()
@@ -27,4 +28,6 @@ urlpatterns = [
     path('admin/export/teachers/', ExportTeachersCSVView.as_view(), name='export-teachers-csv'),
     path('admin/import/students/', ImportStudentsCSVView.as_view(), name='import-students-csv'),
     path('admin/import/teachers/', ImportTeachersCSVView.as_view(), name='import-teachers'),
+    path('password-reset/', PasswordResetRequestView.as_view(), name='api_password_reset'),
+    path('password-reset-confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='api_password_reset_confirm'),
 ]

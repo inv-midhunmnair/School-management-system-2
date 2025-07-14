@@ -57,23 +57,25 @@ class AdminCreateTeacherSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            username=validated_data['username'],
-            password=validated_data['password'],
-            role='teacher'
+        username=validated_data['username'],
+        password=validated_data['password'],
+        role='teacher',
+        first_name=validated_data['first_name'],
+        last_name=validated_data['last_name'],
+        email=validated_data['email']
         )
         teacher = Teacher.objects.create(
-            user=user,
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            email=validated_data['email'],
-            phone=validated_data['phone'],
-            subject_specialization=validated_data['subject_specialization'],
-            employee_id=validated_data['employee_id'],
-            date_of_joining=validated_data['date_of_joining'],
-            status=validated_data['status']
+        user=user,
+        first_name=validated_data['first_name'],
+        last_name=validated_data['last_name'],
+        email=validated_data['email'],
+        phone=validated_data['phone'],
+        subject_specialization=validated_data['subject_specialization'],
+        employee_id=validated_data['employee_id'],
+        date_of_joining=validated_data['date_of_joining'],
+        status=validated_data['status']
         )
         return teacher
-
 
 class AdminCreateStudentSerializer(serializers.Serializer):
     # User fields
@@ -107,7 +109,10 @@ class AdminCreateStudentSerializer(serializers.Serializer):
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
-            role='student'
+            role='student',
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            email=validated_data['email']
         )
         student = Student.objects.create(
             user=user,

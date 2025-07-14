@@ -17,7 +17,12 @@ from django.db import transaction
 from rest_framework.parsers import MultiPartParser, FormParser
 import csv
 from io import StringIO, TextIOWrapper
-
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.conf import settings
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -277,3 +282,45 @@ class ImportTeachersCSVView(APIView):
             "message": f"{created} teachers imported successfully.",
             "errors": errors
         }, status=status.HTTP_201_CREATED if created else status.HTTP_400_BAD_REQUEST)
+
+User = get_user_model()
+
+class PasswordResetRequestView(APIView):
+    permission_classes = [] 
+    def post(self, request):
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            reset_link = f"http://localhost:8000/api/password-reset-confirm/{uid}/{token}/"
+            send_mail(
+                subject="Password Reset",
+                message=f"Click the link to reset your password: {reset_link}",
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False
+            )
+            return Response({"message": "Password reset email sent."}, status=200)
+        except User.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=404)
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = [] 
+    def post(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+            if default_token_generator.check_token(user, token):
+                new_password = request.data.get("new_password")
+                confirm_password=request.data.get("confirm_password")
+                if new_password==confirm_password:
+                    user.set_password(new_password)
+                    user.save()
+                    return Response({"message": "Password reset successful."}, status=200)
+                else:
+                    return Response({"message":"Passwords don't match."},status=400)
+            else:
+                return Response({"error": "Invalid or expired token."}, status=400)
+        except Exception:
+            return Response({"error": "Invalid token or user."}, status=400)
