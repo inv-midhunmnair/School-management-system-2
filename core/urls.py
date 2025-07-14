@@ -3,16 +3,10 @@ from .views import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 from .views import (
-    CustomTokenObtainPairView,
-    TeacherAdminViewSet,
-    StudentAdminViewSet,
-    AdminCreateStudentView,
-    AdminCreateTeacherView,
-    TeacherProfileView,
-    TeacherAssignedStudentsView,
-    StudentProfileView,
-    StudentAssignedTeacherView,
-    ExportStudentsCSVView, ExportTeachersCSVView
+    CustomTokenObtainPairView,TeacherAdminViewSet,StudentAdminViewSet,
+    AdminCreateStudentView,AdminCreateTeacherView,TeacherProfileView,
+    TeacherAssignedStudentsView,StudentProfileView,StudentAssignedTeacherView,
+    ExportStudentsCSVView, ExportTeachersCSVView,ImportStudentsCSVView,ImportTeachersCSVView
 )
 
 router = DefaultRouter()
@@ -31,4 +25,6 @@ urlpatterns = [
     path('student/teacher/', StudentAssignedTeacherView.as_view()),
     path('admin/export/students/', ExportStudentsCSVView.as_view(), name='export-students-csv'),
     path('admin/export/teachers/', ExportTeachersCSVView.as_view(), name='export-teachers-csv'),
+    path('admin/import/students/', ImportStudentsCSVView.as_view(), name='import-students-csv'),
+    path('admin/import/teachers/', ImportTeachersCSVView.as_view(), name='import-teachers'),
 ]

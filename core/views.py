@@ -9,8 +9,14 @@ from .models import Teacher, Student
 from .serializers import (TeacherSerializer, StudentSerializer,
 AdminCreateTeacherSerializer, AdminCreateStudentSerializer)
 from rest_framework import status
+from django.http import HttpResponse,JsonResponse
+from rest_framework.parsers import MultiPartParser
+import csv, io
+from .models import User, Student, Teacher
+from django.db import transaction
+from rest_framework.parsers import MultiPartParser, FormParser
 import csv
-from django.http import HttpResponse
+from io import StringIO, TextIOWrapper
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -148,3 +154,126 @@ class ExportTeachersCSVView(APIView):
             ])
 
         return response
+
+class ImportStudentsCSVView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    parser_classes = [MultiPartParser, FormParser]  # to allow file or form-data
+
+    def post(self, request):
+        # Check if file is uploaded
+        file = request.FILES.get('file', None)
+
+        # Or check if CSV content string is posted
+        csv_text = request.data.get('csv_text', None)
+
+        if not file and not csv_text:
+            return JsonResponse({"error": "Please upload a file or provide csv_text."}, status=400)
+
+        try:
+            if file:
+                data = file.read().decode('utf-8')
+            else:
+                data = csv_text
+
+            io_string = io.StringIO(data)
+            reader = csv.DictReader(io_string)
+
+            created_students = []
+            errors = []
+
+            for idx, row in enumerate(reader, start=1):
+                try:
+                    with transaction.atomic():
+                        user = User.objects.create_user(
+                            username=row['username'],
+                            password=row['password'],
+                            role='student'
+                        )
+                        student = Student.objects.create(
+                            user=user,
+                            first_name=row['first_name'],
+                            last_name=row['last_name'],
+                            email=row['email'],
+                            phone=row['phone'],
+                            roll_number=row['roll_number'],
+                            student_class=row['student_class'],
+                            date_of_birth=row['date_of_birth'],
+                            admission_date=row['admission_date'],
+                            status=row['status'],
+                            assigned_teacher=Teacher.objects.get(id=row['assigned_teacher_id']) if row['assigned_teacher_id'] else None
+                        )
+                        created_students.append(student.id)
+                except Exception as e:
+                    errors.append(f"Row {idx}: {str(e)}")
+
+            return JsonResponse({
+                "success": f"{len(created_students)} students created.",
+                "errors": errors
+            }, status=201)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+class ImportTeachersCSVView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def post(self, request):
+        # Handle file upload
+        if 'file' in request.FILES:
+            try:
+                file = request.FILES['file']
+                decoded_file = TextIOWrapper(file.file, encoding='utf-8')
+                csv_reader = csv.DictReader(decoded_file)
+            except Exception as e:
+                return Response({"error": f"Invalid CSV file. {str(e)}"}, status=400)
+
+        # Handle pasted CSV text
+        elif 'csv_text' in request.data:
+            try:
+                csv_text = request.data['csv_text']
+                csv_file = StringIO(csv_text)
+                csv_reader = csv.DictReader(csv_file)
+            except Exception as e:
+                return Response({"error": f"Invalid CSV text. {str(e)}"}, status=400)
+
+        else:
+            return Response({"error": "No CSV file or text provided."}, status=400)
+
+        created = 0
+        errors = []
+
+        for row in csv_reader:
+            try:
+                if User.objects.filter(username=row['username']).exists():
+                    errors.append(f"Username {row['username']} already exists.")
+                    continue
+                if Teacher.objects.filter(email=row['email']).exists():
+                    errors.append(f"Email {row['email']} already exists.")
+                    continue
+
+                user = User.objects.create_user(
+                    username=row['username'],
+                    password=row['password'],
+                    role='teacher'
+                )
+
+                Teacher.objects.create(
+                    user=user,
+                    first_name=row['first_name'],
+                    last_name=row['last_name'],
+                    email=row['email'],
+                    phone=row['phone'],
+                    subject_specialization=row['subject_specialization'],
+                    employee_id=row['employee_id'],
+                    date_of_joining=row['date_of_joining'],
+                    status=row['status']
+                )
+                created += 1
+
+            except Exception as e:
+                errors.append(f"Row error: {str(e)}")
+
+        return Response({
+            "message": f"{created} teachers imported successfully.",
+            "errors": errors
+        }, status=status.HTTP_201_CREATED if created else status.HTTP_400_BAD_REQUEST)
