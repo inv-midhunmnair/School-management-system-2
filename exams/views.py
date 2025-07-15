@@ -8,6 +8,8 @@ from core.models import Teacher, Student
 from .serializers import ExamCreateSerializer, ExamSerializer, SubmissionSerializer
 from core.permissions import IsTeacher, IsStudent
 
+
+now = timezone.now()
 class CreateExamView(APIView):
     permission_classes = [IsAuthenticated, IsTeacher]
 
@@ -21,14 +23,19 @@ class CreateExamView(APIView):
             return Response({"message": "Exam created"}, status=201)
         return Response(serializer.errors, status=400)
 
+
 class StudentAssignedExamsView(APIView):
     permission_classes = [IsAuthenticated, IsStudent]
 
     def get(self, request):
         student = Student.objects.get(user=request.user)
         now = timezone.now()
-        exams = Exam.objects.filter(assigned_students=student)
-        serializer = ExamSerializer(exams, many=True)
+        # Include active and upcoming exams, exclude expired ones
+        exams = Exam.objects.filter(
+            assigned_students=student,
+            end_time__gte=now  # show if not expired
+        )
+        serializer = ExamSerializer(exams, many=True, context={'request': request})
         return Response(serializer.data)
 
 class AttemptExamView(APIView):
@@ -47,6 +54,9 @@ class AttemptExamView(APIView):
         if now > exam.end_time:
             return Response({"error": "Exam has ended"}, status=403)
 
+        if Submission.objects.filter(student=student, exam=exam).exists():
+            return Response({"error": "You have already submitted this exam"}, status=403)
+        
         serializer = SubmissionSerializer(data=request.data)
         if serializer.is_valid():
             Submission.objects.create(
@@ -69,9 +79,10 @@ class ViewExamDetail(APIView):
 
         now = timezone.now()
         if now < exam.start_time:
-            return Response({"error": "Exam has not started yet"}, status=403)
+            return Response({"error": "You cannot view the exam before the start time"}, status=403)
         if now > exam.end_time:
-            return Response({"error": "Exam has ended"}, status=403)
+            return Response({"error": "This exam has expired"}, status=403)
 
         serializer = ExamSerializer(exam)
         return Response(serializer.data)
+
