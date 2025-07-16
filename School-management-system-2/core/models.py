@@ -22,7 +22,7 @@ class Teacher(models.Model):
     subject_specialization = models.CharField(max_length=100)
     employee_id = models.CharField(max_length=20, unique=True)
     date_of_joining = models.DateField()
-    status = models.CharField(max_length=10, choices=[('Active', 'Active'), ('Inactive', 'Inactive')])
+    status = models.CharField(max_length=10, choices=[('active', 'active'), ('inactive', 'inactive')])
     
     def delete(self, *args, **kwargs):
         user = self.user
@@ -42,7 +42,7 @@ class Student(models.Model):
     student_class = models.CharField(max_length=10)
     date_of_birth = models.DateField()
     admission_date = models.DateField()
-    status = models.CharField(max_length=10, choices=[('Active', 'Active'), ('Inactive', 'Inactive')])
+    status = models.CharField(max_length=10, choices=[('active', 'active'), ('inactive', 'inactive')])
     assigned_teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True, related_name='students')
     
     def delete(self, *args, **kwargs):

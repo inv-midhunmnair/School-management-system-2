@@ -43,7 +43,7 @@ class AdminCreateTeacherSerializer(serializers.Serializer):
     subject_specialization = serializers.CharField()
     employee_id = serializers.CharField()
     date_of_joining = serializers.DateField()
-    status = serializers.ChoiceField(choices=[('Active', 'Active'), ('Inactive', 'Inactive')])
+    status = serializers.ChoiceField(choices=[('active', 'active'), ('inactive', 'inactive')])
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -92,7 +92,7 @@ class AdminCreateStudentSerializer(serializers.Serializer):
     student_class = serializers.CharField()
     date_of_birth = serializers.DateField()
     admission_date = serializers.DateField()
-    status = serializers.ChoiceField(choices=[('Active', 'Active'), ('Inactive', 'Inactive')])
+    status = serializers.ChoiceField(choices=[('active', 'active'), ('inactive', 'inactive')])
     assigned_teacher = serializers.PrimaryKeyRelatedField(queryset=Teacher.objects.all())
 
     def validate_username(self, value):
