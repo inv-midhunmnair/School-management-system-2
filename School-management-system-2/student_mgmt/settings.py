@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'core',
-    'exams'
+    'exams',
+    'corsheaders'
 ]
 
 AUTH_USER_MODEL = 'core.User'
@@ -65,8 +66,16 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,  # Change this to how many records per page
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite default port
+    "http://localhost:5174",  # Your case (custom port)
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
