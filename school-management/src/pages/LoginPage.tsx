@@ -25,7 +25,7 @@ const LoginPage = () => {
 
     try {
       const data = await loginUser(username, password);
-      login(data.access); // Save token
+      login(data.access, data.role) // Save token
       navigate("/dashboard");
     } catch (err) {
       setError("Invalid username or password");
