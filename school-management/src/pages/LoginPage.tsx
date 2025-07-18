@@ -7,8 +7,9 @@ import {
   Typography,
   Alert,
   Stack,
+  Link,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { loginUser } from "../api/auth.api";
 import { useAuth } from "../auth/AuthContext";
 
@@ -25,7 +26,7 @@ const LoginPage = () => {
 
     try {
       const data = await loginUser(username, password);
-      login(data.access, data.role) // Save token
+      login(data.access, data.role); // Save token and role
       navigate("/dashboard");
     } catch (err) {
       setError("Invalid username or password");
@@ -60,6 +61,11 @@ const LoginPage = () => {
           <Button type="submit" variant="contained" fullWidth>
             Login
           </Button>
+          <Typography variant="body2" align="right">
+            <Link component={RouterLink} to="/forgot-password" underline="hover">
+              Forgot Password?
+            </Link>
+          </Typography>
         </Stack>
       </form>
     </Box>

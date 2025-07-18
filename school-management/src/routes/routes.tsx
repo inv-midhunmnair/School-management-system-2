@@ -14,6 +14,8 @@ import TeacherStudentsPage from "../pages/TeacherStudentsPage";
 import TeacherProfilePage from "../pages/TeacherProfilePage";
 import StudentTeacherPage from "../pages/StudentTeacherPage";
 import StudentProfilePage from "../pages/StudentProfilePage";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/ResetPasswordPage";
 
 const AppRoutes = () => (
   <Routes>
@@ -144,6 +146,21 @@ const AppRoutes = () => (
         />
       }
     />
+    <Route
+  path="/forgot-password"
+  element={
+    <AuthLayout>
+      <ForgotPasswordPage />
+    </AuthLayout>
+  }
+/>
+
+<Route
+  path="/reset-password/:uidb64/:token"
+  element={<ResetPasswordPage />}
+/>
+
+
   </Routes>
 );
 
