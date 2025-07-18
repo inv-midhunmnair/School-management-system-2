@@ -192,6 +192,9 @@ class ImportStudentsCSVView(APIView):
                         user = User.objects.create_user(
                             username=row['username'],
                             password=row['password'],
+                            first_name=row['first_name'],
+                            last_name=row['last_name'],
+                            email=row['email'],
                             role='student'
                         )
                         student = Student.objects.create(
