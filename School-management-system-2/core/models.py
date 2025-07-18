@@ -18,7 +18,7 @@ class Teacher(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=15,unique=True)
     subject_specialization = models.CharField(max_length=100)
     employee_id = models.CharField(max_length=20, unique=True)
     date_of_joining = models.DateField()

@@ -63,7 +63,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,  # Change this to how many records per page
+    "PAGE_SIZE": 3,  # Change this to how many records per page
 }
 
 CORS_ALLOWED_ORIGINS = [
