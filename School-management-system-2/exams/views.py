@@ -23,20 +23,51 @@ class CreateExamView(APIView):
             return Response({"message": "Exam created"}, status=201)
         return Response(serializer.errors, status=400)
 
-
-class StudentAssignedExamsView(APIView):
+class StudentActiveExamsView(APIView):
     permission_classes = [IsAuthenticated, IsStudent]
 
     def get(self, request):
         student = Student.objects.get(user=request.user)
         now = timezone.now()
-        # Include active and upcoming exams, exclude expired ones
         exams = Exam.objects.filter(
             assigned_students=student,
-            end_time__gte=now  # show if not expired
+            end_time__gte=now  # Not expired
         )
-        serializer = ExamSerializer(exams, many=True, context={'request': request})
-        return Response(serializer.data)
+
+        # Append has_submitted for each exam
+        data = []
+        for exam in exams:
+            serialized = ExamSerializer(exam, context={'request': request}).data
+            has_submitted = Submission.objects.filter(student=student, exam=exam).exists()
+            serialized['has_submitted'] = has_submitted
+            data.append(serialized)
+
+        return Response(data)
+
+
+class StudentExpiredExamsView(APIView):
+    permission_classes = [IsAuthenticated, IsStudent]
+
+    def get(self, request):
+        student = Student.objects.get(user=request.user)
+        now = timezone.now()
+        expired_exams = Exam.objects.filter(
+            assigned_students=student,
+            end_time__lt=now  # Expired
+        )
+        # Only return minimal details
+        data = [
+            {
+                "id": exam.id,
+                "title": exam.title,
+                "description": exam.description,
+                "start_time": exam.start_time,
+                "end_time": exam.end_time,
+            }
+            for exam in expired_exams
+        ]
+        return Response(data)
+
 
 class AttemptExamView(APIView):
     permission_classes = [IsAuthenticated, IsStudent]
@@ -73,7 +104,7 @@ class ViewExamDetail(APIView):
     def get(self, request, exam_id):
         student = Student.objects.get(user=request.user)
         try:
-            exam = Exam.objects.get(id=exam_id, assigned_students=student)
+            exam = Exam.objects.get(id=exam_id, assigned_students=student)           
         except Exam.DoesNotExist:
             return Response({"error": "Exam not found or not assigned to you"}, status=404)
 

@@ -38,6 +38,19 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # 🔁 Change this value
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Optional: control refresh validity
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,  # or use env variable
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+
 # Application definition
 
 INSTALLED_APPS = [
