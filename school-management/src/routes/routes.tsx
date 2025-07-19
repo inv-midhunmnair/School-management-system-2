@@ -16,6 +16,7 @@ import StudentTeacherPage from "../pages/StudentTeacherPage";
 import StudentProfilePage from "../pages/StudentProfilePage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
+import ImportStudentsPage from "../pages/ImportStudentsPage";
 
 const AppRoutes = () => (
   <Routes>
@@ -160,6 +161,18 @@ const AppRoutes = () => (
   element={<ResetPasswordPage />}
 />
 
+<Route
+  path="/import-students"
+  element={
+    <ProtectedRoute
+      element={
+        <AppLayout>
+          <ImportStudentsPage />
+        </AppLayout>
+      }
+    />
+  }
+/>
 
   </Routes>
 );

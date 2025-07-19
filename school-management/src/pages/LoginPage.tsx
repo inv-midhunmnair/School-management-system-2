@@ -36,7 +36,7 @@ const LoginPage = () => {
   return (
     <Box sx={{ maxWidth: 400, mx: "auto", mt: 10 }}>
       <Typography variant="h4" gutterBottom>
-        Admin Login
+        Login
       </Typography>
 
       {error && <Alert severity="error">{error}</Alert>}

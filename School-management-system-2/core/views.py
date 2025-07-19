@@ -162,23 +162,24 @@ class ExportTeachersCSVView(APIView):
 
 class ImportStudentsCSVView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    parser_classes = [MultiPartParser, FormParser]  # to allow file or form-data
+    parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):
-        # Check if file is uploaded
         file = request.FILES.get('file', None)
-
-        # Or check if CSV content string is posted
         csv_text = request.data.get('csv_text', None)
 
         if not file and not csv_text:
-            return JsonResponse({"error": "Please upload a file or provide csv_text."}, status=400)
+            return JsonResponse({"error": "Please upload a .csv file or provide csv_text."}, status=400)
 
         try:
+            # Enforce only CSV file upload
             if file:
+                ext = os.path.splitext(file.name)[1].lower()
+                if ext != '.csv':
+                    return JsonResponse({"error": "Only .csv files are allowed."}, status=400)
                 data = file.read().decode('utf-8')
             else:
-                data = csv_text
+                data = csv_text  # For fallback, if needed
 
             io_string = io.StringIO(data)
             reader = csv.DictReader(io_string)
@@ -190,25 +191,25 @@ class ImportStudentsCSVView(APIView):
                 try:
                     with transaction.atomic():
                         user = User.objects.create_user(
-                            username=row['username'],
-                            password=row['password'],
-                            first_name=row['first_name'],
-                            last_name=row['last_name'],
-                            email=row['email'],
+                            username=row['username'].strip(),
+                            password=row['password'].strip(),
+                            first_name=row['first_name'].strip(),
+                            last_name=row['last_name'].strip(),
+                            email=row['email'].strip(),
                             role='student'
                         )
                         student = Student.objects.create(
                             user=user,
-                            first_name=row['first_name'],
-                            last_name=row['last_name'],
-                            email=row['email'],
-                            phone=row['phone'],
-                            roll_number=row['roll_number'],
-                            student_class=row['student_class'],
-                            date_of_birth=row['date_of_birth'],
-                            admission_date=row['admission_date'],
-                            status=row['status'],
-                            assigned_teacher=Teacher.objects.get(id=row['assigned_teacher_id']) if row['assigned_teacher_id'] else None
+                            first_name=row['first_name'].strip(),
+                            last_name=row['last_name'].strip(),
+                            email=row['email'].strip(),
+                            phone=row['phone'].strip(),
+                            roll_number=row['roll_number'].strip(),
+                            student_class=row['student_class'].strip(),
+                            date_of_birth=row['date_of_birth'].strip(),
+                            admission_date=row['admission_date'].strip(),
+                            status=row['status'].strip(),
+                            assigned_teacher=Teacher.objects.get(id=row['assigned_teacher_id'].strip()) if row.get('assigned_teacher_id') else None
                         )
                         created_students.append(student.id)
                 except Exception as e:

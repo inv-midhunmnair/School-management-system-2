@@ -16,6 +16,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupIcon from "@mui/icons-material/Group";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import UploadFileIcon from "@mui/icons-material/UploadFile"; // ✅ Import icon for CSV
 import { useAuth } from "../auth/AuthContext";
 import type { JSX } from "react/jsx-runtime";
 
@@ -34,6 +35,7 @@ const Sidebar = () => {
     { label: "Register Student", path: "/register-student", icon: <SchoolIcon /> },
     { label: "Teachers", path: "/teachers", icon: <GroupIcon /> },
     { label: "Students", path: "/students", icon: <SchoolIcon /> },
+    { label: "Import Students", path: "/import-students", icon: <UploadFileIcon /> }, // ✅ Added CSV Import here
   ];
 
   const teacherItems = [
