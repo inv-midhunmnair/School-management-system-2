@@ -41,11 +41,13 @@ const Sidebar = () => {
   const teacherItems = [
     { label: "My Profile", path: "/teacher/profile", icon: <AccountCircleIcon /> },
     { label: "Students", path: "/teacher/students", icon: <GroupIcon /> },
+    { label: "Create Exam", path: "/teacher/create-exam", icon: <UploadFileIcon /> }
   ];
 
   const studentItems = [
     { label: "My Profile", path: "/student/profile", icon: <AccountCircleIcon /> },
     { label: "My Teacher", path: "/student/teacher", icon: <SupervisorAccountIcon /> },
+    { label: "My Exams", path: "/exams/student/exams", icon: <SchoolIcon /> }, // 👈 New
   ];
 
   let roleItems: { label: string; path: string; icon: JSX.Element }[] = [];

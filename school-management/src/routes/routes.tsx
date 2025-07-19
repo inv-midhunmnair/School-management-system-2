@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import AppLayout from "../components/AppLayout";
 import ProtectedRoute from "../auth/ProtectedRoute";
+import CreateExamPage from "../pages/CreateExamPage";
 
 import LoginPage from "../pages/LoginPage";
 import DashboardPage from "../pages/DashboardPage";
@@ -17,6 +18,8 @@ import StudentProfilePage from "../pages/StudentProfilePage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 import ImportStudentsPage from "../pages/ImportStudentsPage";
+import StudentExamsPage from "../pages/StudentExamsPage";
+import AttemptExamPage from "../pages/AttemptExamPage";
 
 const AppRoutes = () => (
   <Routes>
@@ -168,6 +171,44 @@ const AppRoutes = () => (
       element={
         <AppLayout>
           <ImportStudentsPage />
+        </AppLayout>
+      }
+    />
+  }
+/>
+<Route
+  path="/teacher/create-exam"
+  element={
+    <ProtectedRoute
+      element={
+        <AppLayout>
+          <CreateExamPage />
+        </AppLayout>
+      }
+    />
+  }
+/>
+
+<Route
+  path="exams/student/exams"  
+  element={
+    <ProtectedRoute
+      element={
+        <AppLayout>
+          <StudentExamsPage />
+        </AppLayout>
+      }
+    />
+  }
+/>
+
+<Route
+  path="/student/view/:exam_id/"
+  element={
+    <ProtectedRoute
+      element={
+        <AppLayout>
+          <AttemptExamPage />
         </AppLayout>
       }
     />
