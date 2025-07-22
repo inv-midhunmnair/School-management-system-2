@@ -257,7 +257,7 @@ const CreateExamPage = () => {
         </Box>
 
         <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
-          Submit Exam
+          Create Exam
         </Button>
       </form>
 
