@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
-import Sidebar from "./Sidebar";
+import Sidebar from "../pages/Sidebar";
 
 const drawerWidth = 240;
 

@@ -12,8 +12,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
-  const [role, setRole] = useState<string | null>(localStorage.getItem("role"));
+  const [token, setToken] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false); // ✅ Important to wait until localStorage checked
 
   const login = (newToken: string, userRole: string) => {
     localStorage.setItem("token", newToken);
@@ -34,7 +35,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedRole = localStorage.getItem("role");
     if (storedToken) setToken(storedToken);
     if (storedRole) setRole(storedRole);
+    setInitialized(true); // ✅ Only mark ready once done
   }, []);
+
+  // ⛔ Prevent rendering children until auth is initialized
+  if (!initialized) return null;
 
   return (
     <AuthContext.Provider

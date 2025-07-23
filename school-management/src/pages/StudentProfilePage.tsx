@@ -1,46 +1,18 @@
 // src/pages/StudentProfilePage.tsx
-
 import { useEffect, useState } from "react";
 import { Typography, Card, CardContent, Stack } from "@mui/material";
 import axiosInstance from "../api/axios.interceptor";
-import { useAuth } from "../auth/AuthContext";
-
-interface StudentProfile {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  dob: string;
-  admission_date: string;
-  roll_number: string;
-  student_class: string;
-}
 
 const StudentProfilePage = () => {
-  const { token } = useAuth();
-  const [student, setStudent] = useState<StudentProfile | null>(null);
+  const [student, setStudent] = useState<any>(null);
 
   useEffect(() => {
-    const fetchStudentProfile = async () => {
-      try {
-        const response = await axiosInstance.get("/student/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setStudent(response.data);
-      } catch (error) {
-        console.error("Failed to fetch student profile", error);
-      }
-    };
+    axiosInstance.get("/student/profile/")
+      .then(res => setStudent(res.data))
+      .catch(err => console.error("Failed to load profile", err));
+  }, []);
 
-    fetchStudentProfile();
-  }, [token]);
-
-  if (!student) {
-    return <Typography>Loading your profile...</Typography>;
-  }
+  if (!student) return <Typography>Loading...</Typography>;
 
   return (
     <Stack spacing={2} p={4}>

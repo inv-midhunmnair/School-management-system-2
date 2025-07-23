@@ -33,6 +33,30 @@ const DashboardPage = () => {
           >
             Register Student
           </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/students")}
+          >
+            View Students
+          </Button>
+
+           <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/teachers")}
+          >
+            View Teachers
+          </Button>
+
+           <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/import-students")}
+          >
+            Import Students
+          </Button>
         </Stack>
       )}
     </Stack>
