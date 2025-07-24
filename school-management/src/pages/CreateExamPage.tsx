@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -20,6 +20,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import axiosInstance from "../api/axios.interceptor";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { API_ENDPOINTS } from "../api/api.constants";
 
 type QuestionType = {
   text: string;
@@ -70,7 +71,7 @@ const CreateExamPage = () => {
   const [dialogSuccess, setDialogSuccess] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get("/teacher/students/").then((res) => {
+    axiosInstance.get(API_ENDPOINTS.TEACHER_STUDENTS).then((res) => {
       setStudents(
         res.data.map((s: any) => ({
           id: s.id,
@@ -92,7 +93,7 @@ const CreateExamPage = () => {
 
   const onSubmit = async (data: ExamForm) => {
     try {
-      await axiosInstance.post("exams/teacher/create-exam/", data);
+      await axiosInstance.post(API_ENDPOINTS.CREATE_EXAM, data);
       showDialog("✅ Exam created successfully!", true);
       reset();
     } catch (err: any) {
@@ -141,7 +142,7 @@ const CreateExamPage = () => {
             error={!!errors.start_time}
             helperText={errors.start_time?.message}
             margin="normal"
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
           />
           <TextField
             fullWidth
@@ -151,7 +152,7 @@ const CreateExamPage = () => {
             error={!!errors.end_time}
             helperText={errors.end_time?.message}
             margin="normal"
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
           />
 
           <FormControl fullWidth margin="normal">

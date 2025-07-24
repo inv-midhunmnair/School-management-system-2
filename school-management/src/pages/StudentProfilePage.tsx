@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import { Typography, Card, CardContent, Stack } from "@mui/material";
 import axiosInstance from "../api/axios.interceptor";
+import { API_ENDPOINTS } from "../api/api.constants";
 
 const StudentProfilePage = () => {
   const [student, setStudent] = useState<any>(null);
 
   useEffect(() => {
-    axiosInstance.get("/student/profile/")
+    axiosInstance.get(API_ENDPOINTS.STUDENT_PROFILE)
       .then(res => setStudent(res.data))
       .catch(err => console.error("Failed to load profile", err));
   }, []);

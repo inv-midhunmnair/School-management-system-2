@@ -20,6 +20,7 @@ import ResetPasswordPage from "../pages/ResetPasswordPage";
 import ImportStudentsPage from "../pages/ImportStudentsPage";
 import StudentExamsPage from "../pages/StudentExamsPage";
 import AttemptExamPage from "../pages/AttemptExamPage";
+import StudentExamScoresPage from "../pages/StudentExamScores";
 
 const AppRoutes = () => (
   <Routes>
@@ -214,6 +215,19 @@ const AppRoutes = () => (
     />
   }
 />
+<Route
+  path="/student/scores"
+  element={
+    <ProtectedRoute
+      element={
+        <AppLayout>
+          <StudentExamScoresPage/>
+        </AppLayout>
+      }
+    />
+  }
+/>
+
 
   </Routes>
 );

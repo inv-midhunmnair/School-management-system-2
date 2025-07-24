@@ -10,7 +10,8 @@ import {
   Box,
 } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";
-import axios from "axios";
+import axiosInstance from "../api/axios.interceptor";
+import { API_ENDPOINTS } from "../api/api.constants";
 
 interface Student {
   id: number;
@@ -34,11 +35,7 @@ const TeacherStudentsPage = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get("/api/teacher/students/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axiosInstance.get(API_ENDPOINTS.TEACHER_STUDENTS);
 
         const studentsList = Array.isArray(response.data)
           ? response.data

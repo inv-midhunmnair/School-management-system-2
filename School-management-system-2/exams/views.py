@@ -3,10 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
-from .models import Exam, Submission
+from .models import Exam, Question, Submission
 from core.models import Teacher, Student
 from .serializers import ExamCreateSerializer, ExamSerializer, SubmissionSerializer
 from core.permissions import IsTeacher, IsStudent
+from django.shortcuts import get_object_or_404
 
 
 now = timezone.now()
@@ -117,3 +118,49 @@ class ViewExamDetail(APIView):
         serializer = ExamSerializer(exam)
         return Response(serializer.data)
 
+class StudentScoreView(APIView):
+    permission_classes = [IsAuthenticated, IsStudent]
+
+    def get(self, request):
+        try:
+            student = Student.objects.get(user=request.user)
+        except Student.DoesNotExist:
+            return Response({"error": "Student not found."}, status=404)
+
+        submissions = Submission.objects.filter(student=student)
+        result = []
+
+        for submission in submissions:
+            score = 0
+            total = 0
+
+            answers_list = submission.answers  # now expecting a list of dicts
+
+            for item in answers_list:
+                qid = item.get("question_id")
+                selected_option = item.get("selected_option")
+
+                try:
+                    option_mapping = {
+                            "option_1": "1",
+                            "option_2": "2",
+                            "option_3": "3",
+                            "option_4": "4"}
+
+                    question = Question.objects.get(id=qid)
+                    total += 1
+                    selected_option_str = option_mapping.get(selected_option)
+                    if selected_option_str == str(question.correct_option):
+                        score += 1  
+                except Question.DoesNotExist:
+                    continue
+
+            result.append({
+                "exam_id": submission.exam.id,
+                "exam_title": submission.exam.title,
+                "submitted_at": submission.submitted_at,
+                "score": score,
+                "total": total
+            })
+
+        return Response(result)

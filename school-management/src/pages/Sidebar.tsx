@@ -16,7 +16,8 @@ import SchoolIcon from "@mui/icons-material/School";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupIcon from "@mui/icons-material/Group";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import UploadFileIcon from "@mui/icons-material/UploadFile"; // ✅ Import icon for CSV
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import GradeIcon from "@mui/icons-material/Grade"; 
 import { useAuth } from "../auth/AuthContext";
 import type { JSX } from "react/jsx-runtime";
 
@@ -35,19 +36,20 @@ const Sidebar = () => {
     { label: "Register Student", path: "/register-student", icon: <SchoolIcon /> },
     { label: "Teachers", path: "/teachers", icon: <GroupIcon /> },
     { label: "Students", path: "/students", icon: <SchoolIcon /> },
-    { label: "Import Students", path: "/import-students", icon: <UploadFileIcon /> }, // ✅ Added CSV Import here
+    { label: "Import Students", path: "/import-students", icon: <UploadFileIcon /> },
   ];
 
   const teacherItems = [
     { label: "My Profile", path: "/teacher/profile", icon: <AccountCircleIcon /> },
     { label: "Students", path: "/teacher/students", icon: <GroupIcon /> },
-    { label: "Create Exam", path: "/teacher/create-exam", icon: <UploadFileIcon /> }
+    { label: "Create Exam", path: "/teacher/create-exam", icon: <UploadFileIcon /> },
   ];
 
   const studentItems = [
     { label: "My Profile", path: "/student/profile", icon: <AccountCircleIcon /> },
     { label: "My Teacher", path: "/student/teacher", icon: <SupervisorAccountIcon /> },
-    { label: "My Exams", path: "/exams/student/exams", icon: <SchoolIcon /> }, // 👈 New
+    { label: "My Exams", path: "/exams/student/exams", icon: <SchoolIcon /> },
+    { label: "My Scores", path: "/student/scores", icon: <GradeIcon /> }, // ✅ Added
   ];
 
   let roleItems: { label: string; path: string; icon: JSX.Element }[] = [];

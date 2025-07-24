@@ -9,6 +9,7 @@ import {
   Input,
 } from '@mui/material';
 import axiosInstance from '../api/axios.interceptor';
+import { API_ENDPOINTS } from '../api/api.constants';
 
 const ImportStudentsPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -31,7 +32,7 @@ const ImportStudentsPage = () => {
   formData.append('file', file);
 
   try {
-    const response = await axiosInstance.post('/admin/import/students/', formData, {
+    const response = await axiosInstance.post(API_ENDPOINTS.STUDENT_IMPORTS, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

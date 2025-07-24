@@ -9,7 +9,7 @@ import {
   Stack,
 } from "@mui/material";
 import axiosInstance from "../api/axios.interceptor";
-import { useAuth } from "../auth/AuthContext";
+import { API_ENDPOINTS } from "../api/api.constants";
 
 interface Teacher {
   id: number;
@@ -22,7 +22,6 @@ interface Teacher {
 }
 
 const StudentTeacherPage = () => {
-  const { token } = useAuth();
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,11 +30,7 @@ const StudentTeacherPage = () => {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const response = await axiosInstance.get("/student/teacher", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axiosInstance.get(API_ENDPOINTS.STUDENT_TEACHERS);
 
         // Handle both single object or array response
         const data = response.data;
@@ -50,7 +45,7 @@ const StudentTeacherPage = () => {
     };
 
     fetchTeacher();
-  }, [token]);
+  });
 
   const indexOfLast = currentPage * teachersPerPage;
   const indexOfFirst = indexOfLast - teachersPerPage;
