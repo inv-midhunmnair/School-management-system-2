@@ -91,23 +91,26 @@ const RegisterStudentPage = () => {
             ["admission_date", "Admission Date"],
           ].map(([name, label]) => (
             <Grid item xs={12} sm={6} key={name}>
-              <TextField
+             <TextField
               size="small"
-                name={name}
-                label={label}
-                type={
-                  name === "password"
-                    ? "password"
-                    : name.includes("date")
-                    ? "date"
-                    : "text"
-                }
-                value={(formData as any)[name]}
-                onChange={handleChange}
-                fullWidth
-                InputLabelProps={name.includes("date") ? { shrink: true } : {}}
-                required
-              />
+              name={name}
+              label={label}
+              type={
+                name === "password"
+                  ? "password"
+                  : name.includes("date")
+                  ? "date"
+                  : "text"
+              }
+  value={(formData as any)[name]}
+  onChange={handleChange}
+  fullWidth
+  slotProps={{
+    inputLabel: name.includes("date") ? { shrink: true } : {}
+  }}
+  required
+/>
+
             </Grid>
           ))}
 

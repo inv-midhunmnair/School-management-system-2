@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Alert } from '@mui/material';
-import axios from 'axios';
+import { API_ENDPOINTS } from '../api/api.constants';
+import axiosInstance from '../api/axios.interceptor';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const ForgotPasswordPage = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('/api/password-reset/', { email });
+      const response = await axiosInstance.post(API_ENDPOINTS.FORGOT_PASSWORD, { email });
       if (response.status === 200) {
         setSubmitted(true);
       }

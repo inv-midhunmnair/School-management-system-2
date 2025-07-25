@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Grid,
 } from '@mui/material';
+import { API_ENDPOINTS } from '../api/api.constants';
 
 interface Score {
   exam_id: number;
@@ -24,7 +25,7 @@ const StudentExamScoresPage = () => {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await axiosInstance.get('/exams/student/scores/');
+        const response = await axiosInstance.get(API_ENDPOINTS.VIEW_SCORES);
         setScores(response.data);
       } catch (error) {
         console.error('Failed to fetch student scores:', error);
