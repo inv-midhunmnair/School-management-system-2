@@ -3,34 +3,57 @@ import { useAuth } from "../auth/AuthContext";
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
 import Sidebar from "../pages/Sidebar";
 
-const drawerWidth = 240;
+const drawerWidth = 2;
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box
+      sx={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f6f8" }}
+    >
       {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content */}
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        {/* Topbar */}
+      {/* Main Area */}
+      <Box sx={{ flexGrow: 1 }}>
+        {/* Navbar */}
         <AppBar
-         position="fixed"
-         sx={{
-         zIndex: (theme) => theme.zIndex.drawer + 1, 
-         ml: `${drawerWidth}px`,                      
-         width: `calc(100% - ${drawerWidth}px)`,      
-         backgroundColor: "#004687",
-  }}
->
-
-          <Toolbar sx={{ justifyContent: "space-between" }}>
-            <Typography variant="h6">School Management System</Typography>
+          position="fixed"
+          elevation={0}
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            ml: `${drawerWidth}px`,
+            width: `calc(100% - ${drawerWidth}px)`,
+            backgroundColor: "#0A1929", // match sidebar color
+            borderBottom: "1px solid #1c3c60",
+          }}
+        >
+          <Toolbar
+            sx={{
+              justifyContent: "space-between",
+              px: 4,
+              minHeight: "272px", // ✅ Increased height
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", color: "#90caf9" }}
+            >
+              School Management System
+            </Typography>
             <Button
-              color="inherit"
+              variant="outlined"
+              sx={{
+                borderColor: "#90caf9",
+                color: "#90caf9",
+                "&:hover": {
+                  backgroundColor: "#1976d2",
+                  borderColor: "#1976d2",
+                  color: "#fff",
+                },
+              }}
               onClick={() => {
                 logout();
                 navigate("/login");
@@ -41,7 +64,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           </Toolbar>
         </AppBar>
 
-        <Box sx={{ mt: 8, p: 3 }}>{children}</Box>
+        {/* Content with padding and margin */}
+        <Box sx={{ mt: 11, px: 4, py: 3 }}>{children}</Box>
       </Box>
     </Box>
   );

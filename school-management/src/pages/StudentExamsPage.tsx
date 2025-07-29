@@ -8,10 +8,14 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   Button,
+  Grid,
+  Stack,
+  Divider,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axios.interceptor";
 import dayjs from "dayjs";
+import { CheckCircle, HourglassEmpty, PlayArrow } from "@mui/icons-material";
 
 type Exam = {
   id: number;
@@ -19,7 +23,7 @@ type Exam = {
   description: string;
   start_time: string;
   end_time: string;
- has_submitted: boolean;
+  has_submitted: boolean;
 };
 
 const StudentExamsPage = () => {
@@ -50,63 +54,94 @@ const StudentExamsPage = () => {
 
   return (
     <Box p={3}>
-      <Typography variant="h4" gutterBottom>
-        My Exams
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        📚 My Exams
       </Typography>
 
       <ToggleButtonGroup
         value={viewType}
         exclusive
         onChange={(e, val) => val && setViewType(val)}
-        sx={{ mb: 2 }}
+        sx={{ mb: 3 }}
       >
         <ToggleButton value="active">Active Exams</ToggleButton>
         <ToggleButton value="expired">Expired Exams</ToggleButton>
       </ToggleButtonGroup>
 
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" mt={5}>
+          <CircularProgress />
+        </Box>
+      ) : exams.length === 0 ? (
+        <Typography>No {viewType} exams found.</Typography>
       ) : (
-        exams.map((exam) => {
-          const now = dayjs();
-          const start = dayjs(exam.start_time);
-          const end = dayjs(exam.end_time);
-          const withinTimeWindow = now.isAfter(start) && now.isBefore(end);
+        <Grid container spacing={2}>
+          {exams.map((exam) => {
+            const now = dayjs();
+            const start = dayjs(exam.start_time);
+            const end = dayjs(exam.end_time);
+            const withinTimeWindow = now.isAfter(start) && now.isBefore(end);
 
-          return (
-            <Card key={exam.id} sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography variant="h6">{exam.title}</Typography>
-                <Typography variant="body2">{exam.description}</Typography>
-                <Typography>
-                  {start.format("HH:mm")} - {end.format("HH:mm")}
-                </Typography>
+            return (
+              <Grid item xs={12} md={6} key={exam.id}>
+                <Card elevation={3}>
+                  <CardContent>
+                    <Stack spacing={1}>
+                      <Typography variant="h6">{exam.title}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {exam.description}
+                      </Typography>
 
-                {viewType === "active" && (
-                  <>
-                    {exam.has_submitted ? (
-                      <Typography color="success.main" sx={{ mt: 1 }}>
-                        ✅ Already Submitted
+                      <Divider />
+
+                      <Typography variant="body2">
+                        🕒 {start.format("HH:mm")} – {end.format("HH:mm")}
                       </Typography>
-                    ) : withinTimeWindow ? (
-                      <Button
-                        sx={{ mt: 1 }}
-                        variant="contained"
-                        onClick={() => navigate(`/student/view/${exam.id}`)}
-                      >
-                        Attempt Exam
-                      </Button>
-                    ) : (
-                      <Typography color="warning.main" sx={{ mt: 1 }}>
-                        ⏳ You're way too early
-                      </Typography>
-                    )}
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })
+
+                      {viewType === "active" && (
+                        <>
+                          {exam.has_submitted ? (
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={1}
+                            >
+                              <CheckCircle color="success" />
+                              <Typography color="success.main">
+                                Already Submitted
+                              </Typography>
+                            </Stack>
+                          ) : withinTimeWindow ? (
+                            <Button
+                              variant="contained"
+                              startIcon={<PlayArrow />}
+                              onClick={() =>
+                                navigate(`/student/view/${exam.id}`)
+                              }
+                            >
+                              Attempt Exam
+                            </Button>
+                          ) : (
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={1}
+                            >
+                              <HourglassEmpty color="warning" />
+                              <Typography color="warning.main">
+                                You're too early to start this exam
+                              </Typography>
+                            </Stack>
+                          )}
+                        </>
+                      )}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
       )}
     </Box>
   );

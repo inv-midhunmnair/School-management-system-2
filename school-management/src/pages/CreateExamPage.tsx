@@ -92,6 +92,14 @@ const CreateExamPage = () => {
   };
 
   const onSubmit = async (data: ExamForm) => {
+    if (!data.questions || data.questions.length === 0) {
+      showDialog(
+        "❌ Please add at least one question before submitting.",
+        false
+      );
+      return;
+    }
+
     try {
       await axiosInstance.post(API_ENDPOINTS.CREATE_EXAM, data);
       showDialog("✅ Exam created successfully!", true);
@@ -112,7 +120,7 @@ const CreateExamPage = () => {
 
   return (
     <Box p={3}>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h4" gutterBottom fontWeight={600}>
         Create New Exam
       </Typography>
 
@@ -129,7 +137,9 @@ const CreateExamPage = () => {
           <TextField
             fullWidth
             label="Description"
-            {...register("description", { required: "Description is required" })}
+            {...register("description", {
+              required: "Description is required",
+            })}
             error={!!errors.description}
             helperText={errors.description?.message}
             margin="normal"
@@ -142,7 +152,7 @@ const CreateExamPage = () => {
             error={!!errors.start_time}
             helperText={errors.start_time?.message}
             margin="normal"
-            slotProps={{ inputLabel: { shrink: true } }}
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth
@@ -152,7 +162,7 @@ const CreateExamPage = () => {
             error={!!errors.end_time}
             helperText={errors.end_time?.message}
             margin="normal"
-            slotProps={{ inputLabel: { shrink: true } }}
+            InputLabelProps={{ shrink: true }}
           />
 
           <FormControl fullWidth margin="normal">
@@ -234,6 +244,7 @@ const CreateExamPage = () => {
               variant="outlined"
               color="error"
               onClick={() => remove(index)}
+              sx={{ mt: 1 }}
             >
               Remove Question
             </Button>
@@ -262,7 +273,6 @@ const CreateExamPage = () => {
         </Button>
       </form>
 
-      {/* ✅ Dialog for success/failure messages */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>{dialogSuccess ? "Success" : "Error"}</DialogTitle>
         <DialogContent>

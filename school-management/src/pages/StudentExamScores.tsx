@@ -1,14 +1,15 @@
-// src/pages/StudentScoresPage.tsx
-import { useEffect, useState } from 'react';
-import axiosInstance from '../api/axios.interceptor';
+import { useEffect, useState } from "react";
+import axiosInstance from "../api/axios.interceptor";
 import {
+  Box,
   Card,
   CardContent,
   Typography,
   CircularProgress,
   Grid,
-} from '@mui/material';
-import { API_ENDPOINTS } from '../api/api.constants';
+  Divider,
+} from "@mui/material";
+import { API_ENDPOINTS } from "../api/api.constants";
 
 interface Score {
   exam_id: number;
@@ -28,7 +29,7 @@ const StudentExamScoresPage = () => {
         const response = await axiosInstance.get(API_ENDPOINTS.VIEW_SCORES);
         setScores(response.data);
       } catch (error) {
-        console.error('Failed to fetch student scores:', error);
+        console.error("Failed to fetch student scores:", error);
       } finally {
         setLoading(false);
       }
@@ -38,28 +39,52 @@ const StudentExamScoresPage = () => {
   }, []);
 
   return (
-    <div className="p-4">
-      <Typography variant="h5" gutterBottom>
+    <Box p={3}>
+      <Typography variant="h4" gutterBottom fontWeight={600}>
         Your Exam Scores
       </Typography>
 
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" mt={4}>
+          <CircularProgress />
+        </Box>
       ) : scores.length === 0 ? (
-        <Typography>No exam submissions yet.</Typography>
+        <Typography variant="body1" color="textSecondary" mt={2}>
+          You have not submitted any exams yet.
+        </Typography>
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {scores.map((score) => (
-            <Grid item xs={12} md={6} lg={4} key={score.exam_id}>
-              <Card variant="outlined">
+            <Grid item xs={12} sm={6} md={4} key={score.exam_id}>
+              <Card
+                sx={{
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  transition: "transform 0.2s ease-in-out",
+                  "&:hover": { transform: "scale(1.02)" },
+                }}
+              >
                 <CardContent>
-                  <Typography variant="h6">{score.exam_title}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Submitted at:{' '}
-                    {new Date(score.submitted_at).toLocaleString()}
+                  <Typography variant="h6" fontWeight={600}>
+                    {score.exam_title}
                   </Typography>
-                  <Typography variant="body1" sx={{ mt: 1 }}>
-                    Score: {score.score} / {score.total}
+
+                  <Typography variant="body2" color="text.secondary" mt={1}>
+                    Submitted: {new Date(score.submitted_at).toLocaleString()}
+                  </Typography>
+
+                  <Divider sx={{ my: 1.5 }} />
+
+                  <Typography variant="body1" fontWeight={500}>
+                    Score:&nbsp;
+                    <Typography
+                      component="span"
+                      color="primary"
+                      fontWeight={700}
+                    >
+                      {score.score}
+                    </Typography>
+                    &nbsp;/ {score.total}
                   </Typography>
                 </CardContent>
               </Card>
@@ -67,7 +92,7 @@ const StudentExamScoresPage = () => {
           ))}
         </Grid>
       )}
-    </div>
+    </Box>
   );
 };
 

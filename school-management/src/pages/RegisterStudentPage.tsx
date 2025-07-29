@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   Alert,
+  Paper,
 } from "@mui/material";
 import { registerStudent } from "../api/auth.api";
 
@@ -45,7 +46,7 @@ const RegisterStudentPage = () => {
 
     try {
       await registerStudent(payload);
-      setMessage("Student registered successfully!");
+      setMessage("✅ Student registered successfully!");
       setFormData({
         username: "",
         password: "",
@@ -61,66 +62,88 @@ const RegisterStudentPage = () => {
         admission_number: "",
       });
     } catch (err) {
-      setError("Registration failed. Please check the input.");
+      setError("❌ Registration failed. Please check the input.");
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: "auto", mt: 5 }}>
-      <Typography variant="h4" gutterBottom>
-        Register Student
-      </Typography>
+    <Box sx={{ maxWidth: 1100, mx: "auto", mt: 5, px: 2 }}>
+      <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+        <Typography variant="h6" align="center" gutterBottom fontWeight={600}>
+          Register Student
+        </Typography>
 
-      {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {message && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {message}
+          </Alert>
+        )}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          {[
-            ["username", "Username"],
-            ["password", "Password"],
-            ["first_name", "First Name"],
-            ["last_name", "Last Name"],
-            ["email", "Email"],
-            ["phone", "Phone Number"],
-            ["roll_number", "Roll Number"],
-            ["student_class", "Class"],
-            ["admission_number", "Admission Number"],
-            ["assigned_teacher", "Assigned Teacher ID"],
-            ["date_of_birth", "Date of Birth"],
-            ["admission_date", "Admission Date"],
-          ].map(([name, label]) => (
-            <Grid item xs={12} sm={6} key={name}>
-             <TextField
-              size="small"
-              name={name}
-              label={label}
-              type={
-                name === "password"
-                  ? "password"
-                  : name.includes("date")
-                  ? "date"
-                  : "text"
-              }
-  value={(formData as any)[name]}
-  onChange={handleChange}
-  fullWidth
-  slotProps={{
-    inputLabel: name.includes("date") ? { shrink: true } : {}
-  }}
-  required
-/>
-
-            </Grid>
-          ))}
-
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" fullWidth>
-              Register Student
-            </Button>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            {[
+              ["username", "Username"],
+              ["password", "Password"],
+              ["first_name", "First Name"],
+              ["last_name", "Last Name"],
+              ["email", "Email"],
+              ["phone", "Phone Number"],
+              ["roll_number", "Roll Number"],
+              ["student_class", "Class"],
+              ["admission_number", "Admission Number"],
+              ["assigned_teacher", "Assigned Teacher ID"],
+              ["date_of_birth", "Date of Birth"],
+              ["admission_date", "Admission Date"],
+            ].map(([name, label]) => (
+              <Grid item xs={12} sm={4} key={name}>
+                <TextField
+                  size="small"
+                  name={name}
+                  label={label}
+                  type={
+                    name === "password"
+                      ? "password"
+                      : name.includes("date")
+                      ? "date"
+                      : "text"
+                  }
+                  value={(formData as any)[name]}
+                  onChange={handleChange}
+                  fullWidth
+                  InputLabelProps={
+                    name.includes("date") ? { shrink: true } : {}
+                  }
+                  required
+                />
+              </Grid>
+            ))}
           </Grid>
-        </Grid>
-      </form>
+
+          {/* Button placed clearly below the grid */}
+          <Box sx={{ textAlign: "center", mt: 4 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              size="medium"
+              sx={{
+                px: 4,
+                py: 1,
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                textTransform: "none",
+                borderRadius: 2,
+              }}
+            >
+              Register
+            </Button>
+          </Box>
+        </form>
+      </Paper>
     </Box>
   );
 };

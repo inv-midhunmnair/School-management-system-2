@@ -6,7 +6,13 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     <Container maxWidth="sm">
       <Paper
         elevation={3}
-        sx={{ mt: 10, p: 4, display: "flex", flexDirection: "column", alignItems: "center" }}
+        sx={{
+          mt: 10,
+          p: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
         {children}
       </Paper>

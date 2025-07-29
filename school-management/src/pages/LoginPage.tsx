@@ -12,6 +12,7 @@ import {
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { loginUser } from "../api/auth.api";
 import { useAuth } from "../auth/AuthContext";
+import AuthLayout from "../components/AuthLayout";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -34,21 +35,34 @@ const LoginPage = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: "auto", mt: 10 }}>
-      <Typography variant="h4" gutterBottom>
-        Login
+    <Box sx={{ width: "100%" }}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom align="center">
+        School Management Login
+      </Typography>
+      <Typography
+        variant="subtitle2"
+        color="text.secondary"
+        align="center"
+        mb={2}
+      >
+        Please enter your credentials to continue
       </Typography>
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
       <form onSubmit={handleSubmit}>
-        <Stack spacing={2} mt={2}>
+        <Stack spacing={2}>
           <TextField
             label="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             fullWidth
             required
+            variant="outlined"
           />
           <TextField
             label="Password"
@@ -57,12 +71,27 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
             required
+            variant="outlined"
           />
-          <Button type="submit" variant="contained" fullWidth>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{
+              py: 1.5,
+              fontWeight: "bold",
+              fontSize: "1rem",
+              textTransform: "none",
+            }}
+          >
             Login
           </Button>
           <Typography variant="body2" align="right">
-            <Link component={RouterLink} to="/forgot-password" underline="hover">
+            <Link
+              component={RouterLink}
+              to="/forgot-password"
+              underline="hover"
+            >
               Forgot Password?
             </Link>
           </Typography>

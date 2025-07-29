@@ -3,10 +3,11 @@ import {
   Typography,
   Card,
   CardContent,
-  CircularProgress,
-  Container,
+  Grid,
+  Box,
   Pagination,
-  Stack,
+  Divider,
+  CircularProgress,
 } from "@mui/material";
 import axiosInstance from "../api/axios.interceptor";
 import { API_ENDPOINTS } from "../api/api.constants";
@@ -25,14 +26,14 @@ const StudentTeacherPage = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const teachersPerPage = 5;
+  const teachersPerPage = 6;
 
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const response = await axiosInstance.get(API_ENDPOINTS.STUDENT_TEACHERS);
-
-        // Handle both single object or array response
+        const response = await axiosInstance.get(
+          API_ENDPOINTS.STUDENT_TEACHERS
+        );
         const data = response.data;
         const teacherList = Array.isArray(data) ? data : data ? [data] : [];
         setTeachers(teacherList);
@@ -45,7 +46,7 @@ const StudentTeacherPage = () => {
     };
 
     fetchTeacher();
-  });
+  }, []);
 
   const indexOfLast = currentPage * teachersPerPage;
   const indexOfFirst = indexOfLast - teachersPerPage;
@@ -58,46 +59,77 @@ const StudentTeacherPage = () => {
 
   if (loading) {
     return (
-      <Container sx={{ textAlign: "center", mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
         <CircularProgress />
-      </Container>
+      </Box>
     );
   }
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Assigned Teacher
+    <Box p={3}>
+      <Typography variant="h4" gutterBottom fontWeight="bold">
+        Assigned Teachers
       </Typography>
 
-      <Stack spacing={2}>
+      <Grid container spacing={3}>
         {currentTeachers.length > 0 ? (
           currentTeachers.map((teacher) => (
-            <Card key={teacher.id}>
-              <CardContent>
-                <Typography variant="h6">
-                  Name: {teacher.first_name} {teacher.last_name}
-                </Typography>
-                <Typography>Email: {teacher.email}</Typography>
-                <Typography>Phone: {teacher.phone}</Typography>
-                <Typography>Employee ID: {teacher.employee_id}</Typography>
-                <Typography>Subject: {teacher.subject_specialization}</Typography>
-              </CardContent>
-            </Card>
+            <Grid item xs={12} sm={6} md={4} key={teacher.id}>
+              <Card elevation={4} sx={{ minHeight: 220 }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="h6" color="primary" gutterBottom>
+                    {teacher.first_name} {teacher.last_name}
+                  </Typography>
+                  <Divider sx={{ my: 1.5 }} />
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    color="textSecondary"
+                  >
+                    <strong>Email:</strong> {teacher.email}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    color="textSecondary"
+                  >
+                    <strong>Phone:</strong> {teacher.phone}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    color="textSecondary"
+                  >
+                    <strong>Employee ID:</strong> {teacher.employee_id}
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    <strong>Subject:</strong> {teacher.subject_specialization}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
           ))
         ) : (
-          <Typography>No teacher assigned yet.</Typography>
+          <Grid item xs={12}>
+            <Typography color="textSecondary" textAlign="center">
+              No teacher assigned yet.
+            </Typography>
+          </Grid>
         )}
-        {totalPages > 1 && (
+      </Grid>
+
+      {totalPages > 1 && (
+        <Box mt={4} display="flex" justifyContent="center">
           <Pagination
             count={totalPages}
             page={currentPage}
             onChange={handlePageChange}
             color="primary"
+            shape="rounded"
           />
-        )}
-      </Stack>
-    </Container>
+        </Box>
+      )}
+    </Box>
   );
 };
 
